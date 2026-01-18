@@ -1,0 +1,43 @@
+#!/bin/bash
+# pre-commit hook for clickterm
+# Runs shellcheck on all modified shell scripts
+
+echo "Running pre-commit checks..."
+
+# Check if shellcheck is available
+if ! command -v shellcheck >/dev/null 2>&1; then
+    echo "Warning: shellcheck not installed, skipping lint check"
+    echo "Install with: brew install shellcheck"
+    exit 0
+fi
+
+# Get list of staged .sh files
+STAGED_SH=$(git diff --cached --name-only --diff-filter=ACM | grep '\.sh$' || true)
+
+if [ -z "$STAGED_SH" ]; then
+    echo "No shell scripts staged, skipping shellcheck"
+    exit 0
+fi
+
+# Run shellcheck on each staged script
+FAILED=0
+for file in $STAGED_SH; do
+    if [ -f "$file" ]; then
+        if shellcheck -x "$file" 2>/dev/null; then
+            echo "  ✓ $file"
+        else
+            echo "  ✗ $file"
+            FAILED=1
+        fi
+    fi
+done
+
+if [ $FAILED -eq 1 ]; then
+    echo ""
+    echo "Commit blocked: shellcheck found issues."
+    echo "Fix the issues above or commit with --no-verify to skip."
+    exit 1
+fi
+
+echo "All checks passed!"
+exit 0
