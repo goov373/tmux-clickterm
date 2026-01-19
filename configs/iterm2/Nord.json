@@ -4,6 +4,13 @@
       "Name": "Nord",
       "Guid": "nord-dark-profile",
       "Dynamic Profile Parent Name": "Default",
+      "Use Tab Color": true,
+      "Tab Color": {
+        "Red Component": 0.18039215686274508,
+        "Green Component": 0.20392156862745098,
+        "Blue Component": 0.25098039215686274,
+        "Alpha Component": 1
+      },
       "Background Color": {
         "Red Component": 0.18039215686274508,
         "Green Component": 0.20392156862745098,
