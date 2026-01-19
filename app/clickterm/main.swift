@@ -92,7 +92,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             end if
             
             tell current session of current window
-                write text "cd ~/Developers/tmux-clickterm && if tmux has-session -t clickterm 2>/dev/null; then tmux attach-session -t clickterm; else tmux new-session -d -s clickterm && tmux send-keys -t clickterm '~/.config/clickterm/clickterm-shell.sh' Enter && tmux attach-session -t clickterm; fi"
+                write text "cd ~/Developers/tmux-clickterm && if tmux has-session -t clickterm 2>/dev/null; then tmux attach-session -t clickterm; else tmux new-session -d -s clickterm && tmux send-keys -t clickterm 'source ~/.config/clickterm/shell-init.sh' Enter && tmux attach-session -t clickterm; fi"
             end tell
         end tell
         """

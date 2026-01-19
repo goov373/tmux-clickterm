@@ -15,12 +15,12 @@ if [ "$DIRECTION" = "h" ]; then
         exit 0
     fi
     
-    # Allow horizontal split, then launch TUI shell
-    tmux split-window -v "~/.config/clickterm/clickterm-shell.sh"
+    # Allow horizontal split
+    tmux split-window -v
     
 elif [ "$DIRECTION" = "v" ]; then
-    # Vertical split (new column) - always allowed, then launch TUI shell
-    tmux split-window -h "~/.config/clickterm/clickterm-shell.sh"
+    # Vertical split (new column) - always allowed
+    tmux split-window -h
 else
     tmux display-message "Usage: split.sh v|h"
 fi

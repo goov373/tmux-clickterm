@@ -36,7 +36,7 @@ cp "$SCRIPT_DIR/clickterm/Info.plist" "$APP_BUNDLE/Contents/"
 
 # Bundle scripts
 echo -e "\033[0;33mBundling scripts...\033[0m"
-for script in dispatch.sh split.sh close.sh exit.sh launch.sh help-viewer.sh; do
+for script in dispatch.sh split.sh close.sh exit.sh launch.sh help-viewer.sh welcome.sh shell-init.sh; do
     if [[ -f "$PROJECT_ROOT/$script" ]]; then
         cp "$PROJECT_ROOT/$script" "$APP_BUNDLE/Contents/Resources/scripts/"
     fi

@@ -28,6 +28,10 @@
 		<data>
 		DlypsXHmjTQ8P8pQ7XvaeZoiWzo=
 		</data>
+		<key>Resources/scripts/shell-init.sh</key>
+		<data>
+		87KUg/V0Gyvzi1o7XuppdA6O3u8=
+		</data>
 		<key>Resources/scripts/split.sh</key>
 		<data>
 		Hmfm7r1UdLovOsLL8w2mJTAjxgw=
@@ -39,6 +43,10 @@
 		<key>Resources/scripts/tmux-theme.conf</key>
 		<data>
 		hKlK0BNJ9M74Fi+QePUOsAcZMgI=
+		</data>
+		<key>Resources/scripts/welcome.sh</key>
+		<data>
+		BZVcQm5947hAr/GS3M5USPX460M=
 		</data>
 		<key>Resources/tmux.conf</key>
 		<data>
@@ -89,6 +97,13 @@
 			F5F5o2wsQWDG6g8/+l4mm4mdad4IFlz6iuLHjCI3Iys=
 			</data>
 		</dict>
+		<key>Resources/scripts/shell-init.sh</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			D+PDglj+7eGlNGd/i4Twt7kHnVUTe6LkRRc5m7bR/9Q=
+			</data>
+		</dict>
 		<key>Resources/scripts/split.sh</key>
 		<dict>
 			<key>hash2</key>
@@ -108,6 +123,13 @@
 			<key>hash2</key>
 			<data>
 			iz3lO9sUBDjPnuAeVizyE/b+VSsAvUQv5K+V0YUb6tw=
+			</data>
+		</dict>
+		<key>Resources/scripts/welcome.sh</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			weKiuEazm/hZB3RsOatUS36PY9NBr9bIAxH9GvLaekU=
 			</data>
 		</dict>
 		<key>Resources/tmux.conf</key>
