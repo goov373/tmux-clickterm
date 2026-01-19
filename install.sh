@@ -27,7 +27,7 @@ fi
 
 # Copy scripts
 echo "Copying scripts..."
-for script in dispatch.sh split.sh close.sh exit.sh launch.sh help-viewer.sh welcome.sh; do
+for script in dispatch.sh split.sh close.sh exit.sh launch.sh help-viewer.sh welcome.sh clickterm-shell.sh; do
     cp "$SCRIPT_DIR/$script" ~/.config/clickterm/
 done
 

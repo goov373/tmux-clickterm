@@ -81,43 +81,28 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - iTerm Integration
     
     private func launchiTermWithTmux() {
-        // Create a launcher script
-        let launcherScript = """
-        #!/bin/bash
-        cd ~/Developers/tmux-clickterm
-        
-        # Check if session already exists
-        if tmux has-session -t clickterm 2>/dev/null; then
-            # Attach to existing session
-            exec tmux attach-session -t clickterm
-        else
-            # Create new session and show welcome screen
-            tmux new-session -d -s clickterm
-            tmux send-keys -t clickterm '~/.config/clickterm/welcome.sh && clear' Enter
-            exec tmux attach-session -t clickterm
-        fi
+        // AppleScript to launch iTerm with tmux session
+        let appleScript = """
+        tell application "iTerm"
+            activate
+            
+            -- Check if we need a new window or can use existing
+            if (count of windows) = 0 then
+                create window with default profile
+            end if
+            
+            tell current session of current window
+                write text "cd ~/Developers/tmux-clickterm && if tmux has-session -t clickterm 2>/dev/null; then tmux attach-session -t clickterm; else tmux new-session -d -s clickterm && tmux send-keys -t clickterm '~/.config/clickterm/clickterm-shell.sh' Enter && tmux attach-session -t clickterm; fi"
+            end tell
+        end tell
         """
         
-        let tempDir = FileManager.default.temporaryDirectory
-        let scriptPath = tempDir.appendingPathComponent("clickterm-launch.sh")
-        
-        do {
-            try launcherScript.write(to: scriptPath, atomically: true, encoding: .utf8)
-            try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: scriptPath.path)
-        } catch {
-            print("Failed to write launcher script: \(error)")
-            return
-        }
-        
-        // Open iTerm (reuses existing instance if running)
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-        process.arguments = ["-a", "iTerm", "--args", scriptPath.path]
-        
-        do {
-            try process.run()
-        } catch {
-            print("Failed to launch iTerm: \(error)")
+        var error: NSDictionary?
+        if let script = NSAppleScript(source: appleScript) {
+            script.executeAndReturnError(&error)
+            if let error = error {
+                print("AppleScript error: \(error)")
+            }
         }
     }
 }
