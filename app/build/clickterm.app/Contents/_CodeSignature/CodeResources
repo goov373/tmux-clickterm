@@ -22,7 +22,7 @@
 		</data>
 		<key>Resources/scripts/help-viewer.sh</key>
 		<data>
-		XfBwGMDcEbuWXX0C41v/N44lzXk=
+		7Jf6I6HyFRHC+4xxyALiH2Tukbo=
 		</data>
 		<key>Resources/scripts/launch.sh</key>
 		<data>
@@ -30,7 +30,7 @@
 		</data>
 		<key>Resources/scripts/shell-init.sh</key>
 		<data>
-		87KUg/V0Gyvzi1o7XuppdA6O3u8=
+		AyyOVJVD7VHQRfthWUGLFGLQRIw=
 		</data>
 		<key>Resources/scripts/split.sh</key>
 		<data>
@@ -42,15 +42,15 @@
 		</data>
 		<key>Resources/scripts/tmux-theme.conf</key>
 		<data>
-		hKlK0BNJ9M74Fi+QePUOsAcZMgI=
+		R1LZ3u4iP6Z5QBLszKT9qoOhfpY=
 		</data>
 		<key>Resources/scripts/welcome.sh</key>
 		<data>
-		BZVcQm5947hAr/GS3M5USPX460M=
+		svmAAfYQwhUtpijsB6GRXSWKGww=
 		</data>
 		<key>Resources/tmux.conf</key>
 		<data>
-		JdnOk3rbAm5OqZpMa4ERTlF5WaE=
+		hus3E1AMIsSnf+PiP53nTWHXViw=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -87,7 +87,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			TBnkab0yk+gBPffGS/nF3UKViaN/NeIpN7I1A1A5IEg=
+			RcodMfyZns3LJY0j2AkBV7FeC4f0O+HGUVFY0eHd2B4=
 			</data>
 		</dict>
 		<key>Resources/scripts/launch.sh</key>
@@ -101,7 +101,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			D+PDglj+7eGlNGd/i4Twt7kHnVUTe6LkRRc5m7bR/9Q=
+			WyR9srJ2GnCGL4NnAUMnt6DnyQl8O1Uk4uZvGYcz7ZY=
 			</data>
 		</dict>
 		<key>Resources/scripts/split.sh</key>
@@ -122,21 +122,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			iz3lO9sUBDjPnuAeVizyE/b+VSsAvUQv5K+V0YUb6tw=
+			nw/WqdzX2t0WOoOijlLTgU/PAwjxm4nVA2ldXxLa5QE=
 			</data>
 		</dict>
 		<key>Resources/scripts/welcome.sh</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			weKiuEazm/hZB3RsOatUS36PY9NBr9bIAxH9GvLaekU=
+			ywAb1/2FXJzGHsMrG8vy3MPMioz2/JWC5Gcd6/+LY/o=
 			</data>
 		</dict>
 		<key>Resources/tmux.conf</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			mjvsWGspyw+PSRm543NbcfH+ouoJr1uJUrrVaX3Yz1Q=
+			+wCIx8lE60GD7A1UemNTp2eElwJg3RlyDIq1heLMOq0=
 			</data>
 		</dict>
 	</dict>

@@ -48,6 +48,8 @@ cat << 'EOF'
 
 ──────────────────────────────────────────────────────────────────
 
+  Tip: Enable GPU Rendering in iTerm2 for smooth resizing
+
                           q  or  ✕  to close
 EOF
 
