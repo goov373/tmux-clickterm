@@ -99,11 +99,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         
-        // Force a new window by using "open -n" which launches a new instance behavior
-        // Combined with AppleScript to ensure window creation
+        // Open iTerm (reuses existing instance if running)
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-        process.arguments = ["-n", "-a", "iTerm", "--args", scriptPath.path]
+        process.arguments = ["-a", "iTerm", "--args", scriptPath.path]
         
         do {
             try process.run()
