@@ -51,7 +51,7 @@ switch_dark() {
     
     # Update OpenCode config
     if [ -f "$OPENCODE_CONF" ] && command -v jq &>/dev/null; then
-        jq '.theme = "nord"' "$OPENCODE_CONF" > "$OPENCODE_CONF.tmp" && mv "$OPENCODE_CONF.tmp" "$OPENCODE_CONF"
+        jq '.theme = "nord-dark"' "$OPENCODE_CONF" > "$OPENCODE_CONF.tmp" && mv "$OPENCODE_CONF.tmp" "$OPENCODE_CONF"
     fi
     
     # Switch iTerm2 profile
