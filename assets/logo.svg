@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background circle - Nord dark -->
+  <circle cx="256" cy="256" r="240" fill="#2e3440"/>
+  
+  <!-- Terminal window frame -->
+  <rect x="96" y="120" width="320" height="272" rx="16" fill="#3b4252" stroke="#4c566a" stroke-width="4"/>
+  
+  <!-- Title bar -->
+  <rect x="96" y="120" width="320" height="40" rx="16" fill="#4c566a"/>
+  <rect x="96" y="144" width="320" height="16" fill="#4c566a"/>
+  
+  <!-- Window buttons -->
+  <circle cx="128" cy="140" r="10" fill="#bf616a"/>
+  <circle cx="160" cy="140" r="10" fill="#ebcb8b"/>
+  <circle cx="192" cy="140" r="10" fill="#a3be8c"/>
+  
+  <!-- Terminal content area -->
+  <rect x="112" y="176" width="288" height="200" fill="#2e3440"/>
+  
+  <!-- Cursor/prompt - Nord cyan -->
+  <rect x="128" y="200" width="16" height="24" fill="#88c0d0"/>
+  
+  <!-- Mouse pointer - indicating clickability -->
+  <g transform="translate(320, 280)">
+    <path d="M0 0 L0 48 L12 36 L24 60 L32 56 L20 32 L36 32 Z" fill="#eceff4" stroke="#2e3440" stroke-width="2"/>
+  </g>
+  
+  <!-- Click indicator circles -->
+  <circle cx="340" cy="300" r="24" fill="none" stroke="#88c0d0" stroke-width="3" opacity="0.6"/>
+  <circle cx="340" cy="300" r="36" fill="none" stroke="#88c0d0" stroke-width="2" opacity="0.3"/>
+</svg>
