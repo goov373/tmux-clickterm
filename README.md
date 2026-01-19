@@ -54,6 +54,14 @@ tmux new-session -A -s clickterm
 - tmux 3.0+
 - iTerm2
 
+## Changelog
+
+### v1.0.0
+- Native macOS app for Dock integration
+- Always opens in new iTerm window (not tab)
+- Auto-installs scripts on first run
+- Nord theme support for dark/light modes
+
 ## License
 
 MIT
