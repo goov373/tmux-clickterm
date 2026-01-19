@@ -5,40 +5,65 @@
 
 ## Project Summary
 
-**clickterm** is a mouse-driven tmux environment. Users click status bar buttons instead of using keyboard shortcuts.
+**clickterm** is a mouse-driven tmux environment with a native macOS app. Users click status bar buttons instead of using keyboard shortcuts.
 
 **Philosophy:** Mouse-first, discoverable, safe defaults, beautiful (Nord theme).
 
-## Quick Architecture
+## Architecture
+
+Two components:
+
+1. **Native macOS App** (`app/clickterm/main.swift`)
+   - Launches iTerm2 with tmux session
+   - Auto-installs scripts on first run
+   - Reuses existing iTerm instance (no duplicate dock icons)
+
+2. **tmux Layer** (shell scripts)
+   - Clickable buttons in status bar
+   - Handler scripts for each action
 
 ```
 Button Click → dispatch.sh → handler script → tmux command
 ```
 
-**Key files:**
-- `dispatch.sh` - Routes button IDs to handlers
-- `split.sh`, `close.sh`, `launch.sh` - Action handlers
-- `tmux-theme-*.conf` - Theme and button definitions
-- `configs/tmux.conf` - Main tmux config
-
-## File Map
+## Key Files
 
 | Action | Files to Modify |
 |--------|-----------------|
+| Change app behavior | `app/clickterm/main.swift`, then `./app/build-app.sh` |
 | Add new button | `tmux-theme-*.conf`, `dispatch.sh`, new handler script |
 | Change button style | `tmux-theme-dark.conf`, `tmux-theme-light.conf` |
-| Add new tool | `dispatch.sh`, update `launch.sh` case or add new handler |
+| Add new tool | `dispatch.sh` (use `launch.sh` for busy-pane detection) |
 | Change split behavior | `split.sh` |
 | Change close behavior | `close.sh` |
 | Update help | `help-viewer.sh` |
 
+## File Map
+
+```
+tmux-clickterm/
+├── app/
+│   ├── clickterm/main.swift    # macOS app source
+│   ├── build/clickterm.app     # Built app bundle
+│   └── build-app.sh            # Build script
+├── configs/tmux.conf           # Main tmux config
+├── dispatch.sh                 # Routes button clicks
+├── split.sh, close.sh, ...     # Handler scripts
+├── tmux-theme-dark.conf        # Dark theme + buttons
+├── tmux-theme-light.conf       # Light theme + buttons
+└── install.sh                  # Manual install (no app)
+```
+
 ## Coding Style
 
-- Bash scripts with `#!/bin/bash`
+**Bash:**
 - Quote all variables: `"$VAR"`
 - Use `$()` for command substitution
 - Exit 0 on success, 1 on error
-- Add comments for tmux commands
+
+**Swift:**
+- Keep main.swift minimal
+- Use guard for early returns
 
 ## Common tmux Patterns
 
@@ -78,8 +103,15 @@ tmux split-window -v  # horizontal (rows)
 ## Development Commands
 
 ```bash
+# Scripts
 make dev          # Install + reload tmux
 make lint         # Check scripts with shellcheck
+
+# App
+./app/build-app.sh                              # Build
+cp -r app/build/clickterm.app /Applications/    # Install
+
+# Themes
 make theme-dark   # Switch to dark mode
 make theme-light  # Switch to light mode
 ```
@@ -90,14 +122,7 @@ Before committing:
 - `make lint` passes
 - Buttons work in both themes
 - Edge cases handled (last pane, busy pane)
-
-## Roadmap
-
-Planned features:
-- Session save/restore
-- Workspace support
-- Dynamic button config (JSON)
-- Auto dark/light theme switching
+- If app changed: rebuild and test from /Applications
 
 ## Full Documentation
 

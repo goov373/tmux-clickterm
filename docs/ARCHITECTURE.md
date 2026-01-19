@@ -4,39 +4,99 @@ This document provides a deep technical dive into how clickterm works.
 
 ## Overview
 
-clickterm is a layer on top of tmux that replaces keyboard-driven interaction with mouse-driven buttons. It consists of:
+clickterm consists of two main components:
 
-1. **tmux configuration** - Defines buttons and binds mouse events
-2. **Dispatcher** - Routes button clicks to handler scripts
-3. **Handler scripts** - Implement actions with safety logic
-4. **Theme files** - Define visual styling
+1. **Native macOS App** (`clickterm.app`) - Swift application that launches iTerm2 with tmux
+2. **tmux Layer** - Configuration and scripts that add clickable buttons to the status bar
 
 ## System Diagram
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                              iTerm2                                      │
-│  ┌───────────────────────────────────────────────────────────────────┐  │
-│  │                              tmux                                  │  │
-│  │                                                                    │  │
-│  │  ┌──────────────────────────────────────────────────────────────┐ │  │
-│  │  │                         Panes                                 │ │  │
-│  │  │                                                               │ │  │
-│  │  │   ┌─────────────────┐     ┌─────────────────────────────┐    │ │  │
-│  │  │   │                 │     │                             │    │ │  │
-│  │  │   │   Shell/Tool    │     │        Shell/Tool           │    │ │  │
-│  │  │   │                 │     │                             │    │ │  │
-│  │  │   └─────────────────┘     └─────────────────────────────┘    │ │  │
-│  │  │                                                               │ │  │
-│  │  └──────────────────────────────────────────────────────────────┘ │  │
-│  │                                                                    │  │
-│  │  ┌──────────────────────────────────────────────────────────────┐ │  │
-│  │  │ [ │ Split ] [ ─ Stack ] [ × Close ] [ ⎋ Exit ] [ ? ] [tools] │ │  │
-│  │  └──────────────────────────────────────────────────────────────┘ │  │
-│  │                          Status Bar                                │  │
-│  └───────────────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│                          clickterm.app                                    │
+│                                                                           │
+│  ┌─────────────────────────────────────────────────────────────────────┐ │
+│  │ main.swift                                                           │ │
+│  │   - Installs scripts to ~/.config/clickterm on first run            │ │
+│  │   - Launches iTerm2 with tmux session                                │ │
+│  │   - Maintains Dock presence                                          │ │
+│  └─────────────────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌──────────────────────────────────────────────────────────────────────────┐
+│                              iTerm2                                       │
+│  ┌────────────────────────────────────────────────────────────────────┐  │
+│  │                              tmux                                   │  │
+│  │                                                                     │  │
+│  │  ┌───────────────────────────────────────────────────────────────┐ │  │
+│  │  │                         Panes                                  │ │  │
+│  │  │   ┌─────────────────┐     ┌─────────────────────────────┐     │ │  │
+│  │  │   │  Shell/Tool     │     │        Shell/Tool           │     │ │  │
+│  │  │   └─────────────────┘     └─────────────────────────────┘     │ │  │
+│  │  └───────────────────────────────────────────────────────────────┘ │  │
+│  │                                                                     │  │
+│  │  ┌───────────────────────────────────────────────────────────────┐ │  │
+│  │  │ [ Split ] [ Stack ] [ Close ] [ Exit ] [ ? ] [ opencode ]     │ │  │
+│  │  └───────────────────────────────────────────────────────────────┘ │  │
+│  │                          Status Bar (clickable)                     │  │
+│  └────────────────────────────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────────────────────────────┘
 ```
+
+## macOS App Architecture
+
+### main.swift
+
+The native app is a minimal Swift application (~115 lines) with these responsibilities:
+
+```swift
+class AppDelegate: NSObject, NSApplicationDelegate {
+    
+    func applicationDidFinishLaunching(_:) {
+        installScriptsIfNeeded()  // First-run setup
+        launchiTermWithTmux()     // Launch terminal
+        NSApp.setActivationPolicy(.regular)  // Show in Dock
+    }
+    
+    func applicationShouldHandleReopen(_:hasVisibleWindows:) {
+        launchiTermWithTmux()  // Dock icon clicked again
+        return true
+    }
+}
+```
+
+### Script Installation
+
+On first run, the app:
+
+1. Creates `~/.config/clickterm/` directory
+2. Copies bundled scripts from `Resources/scripts/`
+3. Makes scripts executable (chmod 755)
+4. Installs `~/.tmux.conf` (backs up existing)
+
+### iTerm Integration
+
+The app launches iTerm2 with:
+
+```swift
+process.arguments = ["-a", "iTerm", "--args", scriptPath.path]
+```
+
+Key: Uses `-a` (not `-n`) to reuse existing iTerm instance, preventing duplicate Dock icons.
+
+### Build Process
+
+```bash
+./app/build-app.sh
+```
+
+This script:
+1. Compiles Swift source with `swiftc`
+2. Creates `.app` bundle structure
+3. Copies scripts to `Resources/scripts/`
+4. Generates app icon from iconset
+5. Signs with ad-hoc signature
 
 ## Click Flow
 
@@ -92,36 +152,29 @@ When clicked, tmux returns the ID ("splitv") via `#{mouse_status_range}`.
 
 ## File Responsibilities
 
-### configs/tmux.conf
+### App Files
 
-The main tmux configuration file. Key sections:
+| File | Purpose |
+|------|---------|
+| `app/clickterm/main.swift` | App entry point, iTerm launcher |
+| `app/build-app.sh` | Build script for the app |
+| `app/build/clickterm.app` | Built application bundle |
 
-```tmux
-# Enable mouse support
-set -g mouse on
+### Script Files
 
-# Source theme (defines buttons)
-source-file ~/.config/clickterm/tmux-theme-dark.conf
-
-# Bind button clicks to dispatcher
-bind -n MouseUp1Status run-shell '~/.config/clickterm/dispatch.sh "#{mouse_status_range}"'
-```
-
-### dispatch.sh
-
-Central router that maps button IDs to handlers:
-
-```bash
-case "$BUTTON" in
-    splitv)   ~/.config/clickterm/split.sh v ;;
-    splith)   ~/.config/clickterm/split.sh h ;;
-    close)    ~/.config/clickterm/close.sh ;;
-    exit)     ~/.config/clickterm/exit.sh ;;
-    help)     tmux display-popup ... ;;
-    opencode) ~/.config/clickterm/launch.sh opencode ;;
-    claude)   ~/.config/clickterm/launch.sh claude ;;
-esac
-```
+| File | Purpose | When to Modify |
+|------|---------|----------------|
+| `configs/tmux.conf` | Main tmux configuration | Adding keybinds, settings |
+| `dispatch.sh` | Routes button clicks to handlers | Adding new button handlers |
+| `split.sh` | Pane splitting with constraints | Changing split behavior/limits |
+| `close.sh` | Safe pane closing | Changing close confirmation logic |
+| `exit.sh` | Send Ctrl+C to pane | Changing exit behavior |
+| `launch.sh` | Tool launcher with busy detection | Adding new tools |
+| `help-viewer.sh` | Interactive help popup | Updating help content |
+| `theme-switch.sh` | Toggle dark/light themes | Changing theme behavior |
+| `tmux-theme-dark.conf` | Dark theme + buttons | Styling, adding buttons |
+| `tmux-theme-light.conf` | Light theme + buttons | Styling, adding buttons |
+| `install.sh` | Manual installation script | Adding install steps |
 
 ### Handler Scripts
 
@@ -172,27 +225,17 @@ fi
 
 ### Color Definitions
 
-The Nord palette is defined in `theme.json`:
+The Nord palette is used throughout:
 
-```json
-{
-  "palette": {
-    "nord0": "#2e3440",
-    "nord1": "#3b4252",
-    ...
-  },
-  "dark": {
-    "bg-base": "#2e3440",
-    "fg-primary": "#d8dee9",
-    ...
-  },
-  "light": {
-    "bg-base": "#eceff4",
-    "fg-primary": "#2e3440",
-    ...
-  }
-}
-```
+| Color | Hex | Usage |
+|-------|-----|-------|
+| nord0 | `#2e3440` | Dark background |
+| nord4 | `#d8dee9` | Light text |
+| nord6 | `#eceff4` | Light background |
+| nord8 | `#88c0d0` | Accent/cyan |
+| nord11 | `#bf616a` | Error/red |
+| nord12 | `#d08770` | Warning/orange |
+| nord14 | `#a3be8c` | Success/green |
 
 ### Theme Files
 
@@ -204,6 +247,55 @@ Two theme files provide dark and light variants:
 ### Theme Switching
 
 The `theme-switch.sh` script modifies `~/.tmux.conf` to source the appropriate theme file.
+
+## Installation Layouts
+
+### App Bundle (Installed)
+
+```
+/Applications/clickterm.app/
+└── Contents/
+    ├── MacOS/clickterm           # Compiled binary
+    ├── Resources/
+    │   ├── AppIcon.icns          # App icon
+    │   ├── scripts/              # Bundled handler scripts
+    │   │   ├── dispatch.sh
+    │   │   ├── split.sh
+    │   │   └── ...
+    │   └── tmux.conf             # Bundled tmux config
+    ├── Info.plist
+    └── _CodeSignature/
+```
+
+### User Config (Auto-installed on first run)
+
+```
+~/.config/clickterm/
+├── close.sh
+├── dispatch.sh
+├── exit.sh
+├── help-viewer.sh
+├── launch.sh
+├── split.sh
+├── theme-switch.sh
+├── theme.json
+├── tmux-theme-dark.conf
+└── tmux-theme-light.conf
+
+~/.tmux.conf (sources theme from above)
+```
+
+## tmux Format Strings
+
+Common format strings used:
+
+| Format | Returns |
+|--------|---------|
+| `#{pane_current_command}` | Running process name (zsh, vim, etc.) |
+| `#{window_panes}` | Number of panes in window |
+| `#{pane_at_top}` | 1 if pane is at top edge, 0 otherwise |
+| `#{pane_at_bottom}` | 1 if pane is at bottom edge |
+| `#{mouse_status_range}` | Button ID from status bar click |
 
 ## Popup System
 
@@ -221,51 +313,13 @@ The viewer script (`help-viewer.sh`):
 5. Waits for q, Escape, or X click
 6. Restores terminal state
 
-## tmux Format Strings
-
-Common format strings used:
-
-| Format | Returns |
-|--------|---------|
-| `#{pane_current_command}` | Running process name (zsh, vim, etc.) |
-| `#{window_panes}` | Number of panes in window |
-| `#{pane_at_top}` | 1 if pane is at top edge, 0 otherwise |
-| `#{pane_at_bottom}` | 1 if pane is at bottom edge |
-| `#{mouse_status_range}` | Button ID from status bar click |
-
-## Installation Layout
-
-```
-~/.config/clickterm/
-├── close.sh
-├── dispatch.sh
-├── exit.sh
-├── help-viewer.sh
-├── help.txt (legacy)
-├── launch.sh
-├── split.sh
-├── sync-theme.sh (legacy)
-├── theme-switch.sh
-├── theme.json
-├── tmux-theme-dark.conf
-└── tmux-theme-light.conf
-
-~/.tmux.conf (sources theme from above)
-
-~/.config/opencode/themes/
-├── nord-dark.json
-└── nord-light.json
-
-~/Library/Application Support/iTerm2/DynamicProfiles/
-└── Nord.json
-```
-
 ## Performance Considerations
 
 1. **Static hex colors** - No runtime computation for colors
 2. **Direct script execution** - No intermediate interpreters
 3. **Minimal tmux queries** - Only fetch needed variables
 4. **No polling** - Event-driven via mouse clicks
+5. **Reuses iTerm instance** - No duplicate processes
 
 ## Extension Points
 

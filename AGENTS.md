@@ -4,7 +4,7 @@
 
 ## Project Overview
 
-**clickterm** is a mouse-driven tmux development environment designed for non-technical users. The core philosophy is: **click buttons instead of memorizing keyboard shortcuts**.
+**clickterm** is a mouse-driven tmux development environment with a native macOS app. The core philosophy is: **click buttons instead of memorizing keyboard shortcuts**.
 
 ### Target Users
 - Developers who prefer GUI-style interactions
@@ -20,6 +20,22 @@
 ---
 
 ## Architecture
+
+clickterm has two main components:
+
+### 1. Native macOS App (`clickterm.app`)
+
+A Swift application (~115 lines) that:
+- Launches iTerm2 with a tmux session
+- Auto-installs scripts on first run
+- Maintains Dock presence
+- Reuses existing iTerm instance (no duplicate icons)
+
+**Key file:** `app/clickterm/main.swift`
+
+### 2. tmux Layer
+
+Shell scripts and configuration that add clickable buttons to tmux's status bar.
 
 ### System Flow
 
@@ -60,23 +76,34 @@ User clicks status bar button
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### File Responsibilities
+---
+
+## File Responsibilities
+
+### App Files
 
 | File | Purpose | When to Modify |
 |------|---------|----------------|
-| `configs/tmux.conf` | Main tmux configuration, button definitions | Adding new buttons, changing keybinds |
+| `app/clickterm/main.swift` | App entry point, iTerm launcher | Changing app behavior |
+| `app/build-app.sh` | Build script | Adding build steps |
+| `app/build/clickterm.app` | Built application bundle | Auto-generated |
+
+### Script Files
+
+| File | Purpose | When to Modify |
+|------|---------|----------------|
+| `configs/tmux.conf` | Main tmux configuration | Adding keybinds, settings |
 | `dispatch.sh` | Routes button clicks to handlers | Adding new button handlers |
 | `split.sh` | Pane splitting with constraints | Changing split behavior/limits |
 | `close.sh` | Safe pane closing | Changing close confirmation logic |
 | `exit.sh` | Send Ctrl+C to pane | Changing exit behavior |
-| `launch.sh` | Tool launcher with busy detection | Adding new tools, changing launch logic |
+| `launch.sh` | Tool launcher with busy detection | Adding new tools |
 | `help-viewer.sh` | Interactive help popup | Updating help content |
-| `help.txt` | Help content (legacy, unused) | - |
-| `theme.json` | Master Nord color palette | Adding colors, reference only |
-| `tmux-theme-dark.conf` | Nord dark theme for tmux | Styling changes (dark mode) |
-| `tmux-theme-light.conf` | Nord light theme for tmux | Styling changes (light mode) |
+| `theme.json` | Master Nord color palette | Adding colors (reference only) |
+| `tmux-theme-dark.conf` | Nord dark theme + buttons | Styling changes (dark mode) |
+| `tmux-theme-light.conf` | Nord light theme + buttons | Styling changes (light mode) |
 | `theme-switch.sh` | Toggle dark/light themes | Changing theme switch behavior |
-| `install.sh` | Installation script | Adding install steps |
+| `install.sh` | Manual installation script | Adding install steps |
 
 ### Button Definition (in tmux theme files)
 
@@ -123,6 +150,15 @@ main "$@"
 - Use `[[` for conditionals in bash, `[` only for POSIX compatibility
 - Add comments for non-obvious tmux commands
 - Exit codes: 0 = success, 1 = error, no exit = continue
+
+### Swift Code
+
+```swift
+// Keep main.swift minimal and focused
+// Extract complex logic into separate methods
+// Use guard for early returns
+// Handle errors gracefully with user feedback
+```
 
 ### tmux Commands (Common Patterns)
 
@@ -204,7 +240,13 @@ tmux display-message "Button clicked!"
 ### Step 5: Update install.sh
 Add your new script to the install process.
 
-### Step 6: Test
+### Step 6: Rebuild App (if needed)
+```bash
+./app/build-app.sh
+cp -r app/build/clickterm.app /Applications/
+```
+
+### Step 7: Test
 ```bash
 make dev  # Install and reload
 # Click your button
@@ -244,6 +286,7 @@ Before committing changes:
 - [ ] Test each affected button
 - [ ] Test in both dark and light themes
 - [ ] Test edge cases (last pane, busy pane, etc.)
+- [ ] If app changed: rebuild and test from /Applications
 
 ---
 
@@ -255,17 +298,58 @@ git clone https://github.com/goov373/tmux-clickterm.git
 cd tmux-clickterm
 make install
 
-# Development cycle
+# Development cycle for scripts
 # 1. Edit files
 # 2. Run: make dev    (install + reload)
 # 3. Test in tmux
 # 4. Repeat
+
+# Development cycle for app
+# 1. Edit app/clickterm/main.swift
+# 2. Run: ./app/build-app.sh
+# 3. Run: cp -r app/build/clickterm.app /Applications/
+# 4. Test by launching from Dock
+# 5. Repeat
 
 # Before committing
 make lint
 git add -A
 git commit -m "Description of changes"
 git push
+```
+
+---
+
+## Project Structure
+
+```
+tmux-clickterm/
+├── app/
+│   ├── clickterm/
+│   │   └── main.swift          # Native macOS app source
+│   ├── build/
+│   │   └── clickterm.app/      # Built application bundle
+│   └── build-app.sh            # Build script
+├── assets/
+│   ├── Logos/                  # Logo source files
+│   └── clickterm.iconset/      # App icon set
+├── configs/
+│   ├── tmux.conf               # Main tmux configuration
+│   ├── iterm2/Nord.json        # iTerm2 color profile
+│   └── opencode/themes/        # OpenCode Nord themes
+├── docs/
+│   ├── ARCHITECTURE.md         # Technical deep-dive
+│   ├── EXTENDING.md            # How to add features
+│   └── PERSISTENT-WRAPPER.md   # Future enhancement notes
+├── *.sh                        # Handler scripts
+├── tmux-theme-dark.conf        # Dark theme + button definitions
+├── tmux-theme-light.conf       # Light theme + button definitions
+├── theme.json                  # Nord color palette reference
+├── install.sh                  # Manual installation script
+├── Makefile                    # Development commands
+├── AGENTS.md                   # This file (AI assistant guide)
+├── CLAUDE.md                   # Short reference for Claude
+└── README.md                   # User documentation
 ```
 
 ---
@@ -301,7 +385,7 @@ git push
 
 ### Technical Debt
 
-- [ ] `sync-theme.sh` is legacy, consider removing or repurposing
+- [ ] `sync-theme.sh` is legacy, consider removing
 - [ ] `help.txt` is unused (content is in help-viewer.sh)
 - [ ] Consider consolidating theme files with variables
 
@@ -311,19 +395,20 @@ git push
 
 ### Make Targets
 ```
-make install    # Install to ~/.config/clickterm
-make reload     # Reload tmux configuration  
-make dev        # Install + reload
-make lint       # Run shellcheck on all scripts
-make theme-dark # Switch to dark theme
-make theme-light # Switch to light theme
-make clean      # Remove installed files
+make install      # Install scripts to ~/.config/clickterm
+make reload       # Reload tmux configuration  
+make dev          # Install + reload
+make lint         # Run shellcheck on all scripts
+make theme-dark   # Switch to dark theme
+make theme-light  # Switch to light theme
+make clean        # Remove installed files
 ```
 
 ### Key Files to Read First
-1. `dispatch.sh` - Understand the routing
-2. `configs/tmux.conf` - See button definitions
-3. `tmux-theme-dark.conf` - See status bar styling
+1. `app/clickterm/main.swift` - Understand the app
+2. `dispatch.sh` - Understand button routing
+3. `configs/tmux.conf` - See tmux configuration
+4. `tmux-theme-dark.conf` - See status bar styling
 
 ### Getting Help
 - Click `[ ? ]` in tmux for quick reference
