@@ -36,14 +36,14 @@ cp "$SCRIPT_DIR/clickterm/Info.plist" "$APP_BUNDLE/Contents/"
 
 # Bundle scripts
 echo -e "\033[0;33mBundling scripts...\033[0m"
-for script in dispatch.sh split.sh close.sh exit.sh launch.sh help-viewer.sh theme-switch.sh; do
+for script in dispatch.sh split.sh close.sh exit.sh launch.sh help-viewer.sh; do
     if [[ -f "$PROJECT_ROOT/$script" ]]; then
         cp "$PROJECT_ROOT/$script" "$APP_BUNDLE/Contents/Resources/scripts/"
     fi
 done
 
 # Copy theme files
-for theme in tmux-theme-dark.conf tmux-theme-light.conf theme.json; do
+for theme in tmux-theme.conf theme.json; do
     if [[ -f "$PROJECT_ROOT/$theme" ]]; then
         cp "$PROJECT_ROOT/$theme" "$APP_BUNDLE/Contents/Resources/scripts/"
     fi

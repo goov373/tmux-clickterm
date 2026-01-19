@@ -100,9 +100,7 @@ User clicks status bar button
 | `launch.sh` | Tool launcher with busy detection | Adding new tools |
 | `help-viewer.sh` | Interactive help popup | Updating help content |
 | `theme.json` | Master Nord color palette | Adding colors (reference only) |
-| `tmux-theme-dark.conf` | Nord dark theme + buttons | Styling changes (dark mode) |
-| `tmux-theme-light.conf` | Nord light theme + buttons | Styling changes (light mode) |
-| `theme-switch.sh` | Toggle dark/light themes | Changing theme switch behavior |
+| `tmux-theme.conf` | Nord Dark theme + buttons | Styling changes |
 | `install.sh` | Manual installation script | Adding install steps |
 
 ### Button Definition (in tmux theme files)
@@ -188,18 +186,18 @@ tmux display-menu -T "Title" \
 tmux confirm-before -p "Are you sure? [y/n]" "command"
 ```
 
-### Theme Colors (Nord Palette)
+### Theme Colors (Nord Dark Palette)
 
 When adding UI elements, use these color references:
 
-| Purpose | Dark Mode | Light Mode |
-|---------|-----------|------------|
-| Background | `#2e3440` (nord0) | `#eceff4` (nord6) |
-| Text | `#d8dee9` (nord4) | `#2e3440` (nord0) |
-| Accent | `#88c0d0` (nord8) | `#5e81ac` (nord10) |
-| Error/Close | `#bf616a` (nord11) | `#bf616a` (nord11) |
-| Warning/Exit | `#d08770` (nord12) | `#d08770` (nord12) |
-| Success | `#a3be8c` (nord14) | `#a3be8c` (nord14) |
+| Purpose | Color |
+|---------|-------|
+| Background | `#2e3440` (nord0) |
+| Text | `#d8dee9` (nord4) |
+| Accent | `#88c0d0` (nord8) |
+| Error/Close | `#bf616a` (nord11) |
+| Warning/Exit | `#d08770` (nord12) |
+| Success | `#a3be8c` (nord14) |
 
 ---
 
@@ -208,8 +206,8 @@ When adding UI elements, use these color references:
 ### Step 1: Choose an ID
 Pick a short, descriptive ID (e.g., `settings`, `newwin`, `layout`).
 
-### Step 2: Add to Theme Files
-Edit both `tmux-theme-dark.conf` and `tmux-theme-light.conf`:
+### Step 2: Add to Theme File
+Edit `tmux-theme.conf`:
 
 ```tmux
 # In status-right, add your button:
@@ -259,7 +257,7 @@ make dev  # Install and reload
 To add a new AI tool or CLI program to the launcher buttons:
 
 ### Step 1: Add Button (same as above)
-Add to theme files with ID like `mytool`.
+Add to theme file with ID like `mytool`.
 
 ### Step 2: Update dispatch.sh
 
@@ -284,7 +282,6 @@ Before committing changes:
 - [ ] `make install` works
 - [ ] `make reload` applies changes
 - [ ] Test each affected button
-- [ ] Test in both dark and light themes
 - [ ] Test edge cases (last pane, busy pane, etc.)
 - [ ] If app changed: rebuild and test from /Applications
 
@@ -335,15 +332,13 @@ tmux-clickterm/
 │   └── clickterm.iconset/      # App icon set
 ├── configs/
 │   ├── tmux.conf               # Main tmux configuration
-│   ├── iterm2/Nord.json        # iTerm2 color profile
-│   └── opencode/themes/        # OpenCode Nord themes
+│   └── iterm2/Nord.json        # iTerm2 color profile
 ├── docs/
 │   ├── ARCHITECTURE.md         # Technical deep-dive
 │   ├── EXTENDING.md            # How to add features
 │   └── PERSISTENT-WRAPPER.md   # Future enhancement notes
 ├── *.sh                        # Handler scripts
-├── tmux-theme-dark.conf        # Dark theme + button definitions
-├── tmux-theme-light.conf       # Light theme + button definitions
+├── tmux-theme.conf             # Nord Dark theme + button definitions
 ├── theme.json                  # Nord color palette reference
 ├── install.sh                  # Manual installation script
 ├── Makefile                    # Development commands
@@ -373,21 +368,14 @@ tmux-clickterm/
    - User-customizable buttons without editing scripts
    - Button visibility conditions
 
-4. **Auto Theme Switching**
-   - Detect macOS dark/light mode
-   - Automatically switch themes
-   - Hook into system appearance changes
-
-5. **Status Indicators**
+4. **Status Indicators**
    - Git branch/status in status bar
    - Current directory display
    - Process status indicators
 
 ### Technical Debt
 
-- [ ] `sync-theme.sh` is legacy, consider removing
 - [ ] `help.txt` is unused (content is in help-viewer.sh)
-- [ ] Consider consolidating theme files with variables
 
 ---
 
@@ -399,8 +387,6 @@ make install      # Install scripts to ~/.config/clickterm
 make reload       # Reload tmux configuration  
 make dev          # Install + reload
 make lint         # Run shellcheck on all scripts
-make theme-dark   # Switch to dark theme
-make theme-light  # Switch to light theme
 make clean        # Remove installed files
 ```
 
@@ -408,7 +394,7 @@ make clean        # Remove installed files
 1. `app/clickterm/main.swift` - Understand the app
 2. `dispatch.sh` - Understand button routing
 3. `configs/tmux.conf` - See tmux configuration
-4. `tmux-theme-dark.conf` - See status bar styling
+4. `tmux-theme.conf` - See status bar styling
 
 ### Getting Help
 - Click `[ ? ]` in tmux for quick reference

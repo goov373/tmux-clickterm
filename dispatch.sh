@@ -26,9 +26,6 @@ case "$BUTTON" in
     claude)
         ~/.config/clickterm/launch.sh claude
         ;;
-    theme)
-        ~/.config/clickterm/theme-switch.sh toggle
-        ;;
     *)
         # Unknown button or empty - do nothing
         ;;

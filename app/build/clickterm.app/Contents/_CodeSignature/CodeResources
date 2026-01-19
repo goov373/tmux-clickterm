@@ -48,9 +48,13 @@
 		<data>
 		Z56Bb4XDgX43jkmSpfDBhjl7RUs=
 		</data>
+		<key>Resources/scripts/tmux-theme.conf</key>
+		<data>
+		hKlK0BNJ9M74Fi+QePUOsAcZMgI=
+		</data>
 		<key>Resources/tmux.conf</key>
 		<data>
-		luMZORxWOAxSdlz9I9tFqZNbp3Q=
+		JdnOk3rbAm5OqZpMa4ERTlF5WaE=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -132,11 +136,18 @@
 			rgxrVXFha9lR20BeKyIorkU7yz9/zNInZQjfdgNYclo=
 			</data>
 		</dict>
+		<key>Resources/scripts/tmux-theme.conf</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			iz3lO9sUBDjPnuAeVizyE/b+VSsAvUQv5K+V0YUb6tw=
+			</data>
+		</dict>
 		<key>Resources/tmux.conf</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			N3Iizja5Udmn9ZdseoH1YRttqkd+7hrsOFxY2MUyp6M=
+			mjvsWGspyw+PSRm543NbcfH+ouoJr1uJUrrVaX3Yz1Q=
 			</data>
 		</dict>
 	</dict>

@@ -75,15 +75,6 @@ cmd_status() {
         echo -e "  Installation: ${YELLOW}Not installed${NC}"
     fi
     
-    # Check current theme
-    if [ -f ~/.tmux.conf ]; then
-        if grep -q "^source-file.*tmux-theme-light" ~/.tmux.conf 2>/dev/null; then
-            echo -e "  Theme:        ${BLUE}Nord Light${NC}"
-        else
-            echo -e "  Theme:        ${BLUE}Nord Dark${NC}"
-        fi
-    fi
-    
     # Check tmux
     if [ -n "$TMUX" ]; then
         echo -e "  tmux:         ${GREEN}Running${NC}"
@@ -123,24 +114,6 @@ cmd_watch() {
     done
 }
 
-cmd_theme() {
-    local mode="$1"
-    case "$mode" in
-        dark)
-            make -s theme-dark
-            echo -e "${GREEN}Switched to Nord Dark${NC}"
-            ;;
-        light)
-            make -s theme-light
-            echo -e "${GREEN}Switched to Nord Light${NC}"
-            ;;
-        *)
-            echo -e "${YELLOW}Usage: $0 theme [dark|light]${NC}"
-            return 1
-            ;;
-    esac
-}
-
 cmd_help() {
     print_header
     echo ""
@@ -152,14 +125,12 @@ cmd_help() {
     echo "    lint        Run shellcheck on all scripts"
     echo "    status      Show installation and environment status"
     echo "    watch       Watch files and auto-reload on changes"
-    echo "    theme       Switch theme: theme dark | theme light"
     echo "    help        Show this help"
     echo ""
     echo "  Examples:"
     echo ""
     echo "    ./dev.sh dev           # Quick development iteration"
     echo "    ./dev.sh lint          # Check scripts before commit"
-    echo "    ./dev.sh theme dark    # Switch to dark mode"
     echo "    ./dev.sh watch         # Auto-reload on file changes"
     echo ""
 }
@@ -183,9 +154,6 @@ case "${1:-help}" in
         ;;
     watch)
         cmd_watch
-        ;;
-    theme)
-        cmd_theme "$2"
         ;;
     help|--help|-h)
         cmd_help

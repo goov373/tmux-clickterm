@@ -4,85 +4,72 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-echo "Installing tmux-clickterm..."
+echo "Installing clickterm..."
 echo ""
 
 # Create config directory
 echo "Creating ~/.config/clickterm/..."
 mkdir -p ~/.config/clickterm
 
-# Copy scripts and configs
-echo "Copying scripts and theme files..."
-cp "$SCRIPT_DIR"/*.sh ~/.config/clickterm/
-cp "$SCRIPT_DIR"/*.json ~/.config/clickterm/
-cp "$SCRIPT_DIR"/*.conf ~/.config/clickterm/
+# Clean up old theme-switching files if they exist
+echo "Cleaning up old files..."
+rm -f ~/.config/clickterm/theme-switch.sh
+rm -f ~/.config/clickterm/sync-theme.sh
+rm -f ~/.config/clickterm/tmux-theme-dark.conf
+rm -f ~/.config/clickterm/tmux-theme-light.conf
+
+# Unload and remove old launchd agent if it exists
+if [ -f ~/Library/LaunchAgents/com.clickterm.theme-watcher.plist ]; then
+    launchctl unload ~/Library/LaunchAgents/com.clickterm.theme-watcher.plist 2>/dev/null || true
+    rm -f ~/Library/LaunchAgents/com.clickterm.theme-watcher.plist
+    echo "Removed old theme-watcher agent"
+fi
+
+# Copy scripts
+echo "Copying scripts..."
+for script in dispatch.sh split.sh close.sh exit.sh launch.sh help-viewer.sh; do
+    cp "$SCRIPT_DIR/$script" ~/.config/clickterm/
+done
+
+# Copy theme and config files
+echo "Copying theme files..."
+cp "$SCRIPT_DIR/tmux-theme.conf" ~/.config/clickterm/
+cp "$SCRIPT_DIR/theme.json" ~/.config/clickterm/
 cp "$SCRIPT_DIR"/*.txt ~/.config/clickterm/ 2>/dev/null || true
 
 # Make scripts executable
 chmod +x ~/.config/clickterm/*.sh
 
-# Backup existing tmux.conf if it exists
+# Backup existing tmux.conf if it exists and is not ours
 if [ -f ~/.tmux.conf ]; then
-    echo "Backing up existing ~/.tmux.conf to ~/.tmux.conf.backup..."
-    cp ~/.tmux.conf ~/.tmux.conf.backup
+    if ! grep -q "clickterm" ~/.tmux.conf 2>/dev/null; then
+        echo "Backing up existing ~/.tmux.conf to ~/.tmux.conf.backup..."
+        cp ~/.tmux.conf ~/.tmux.conf.backup
+    fi
 fi
 
 # Install tmux config
 echo "Installing tmux configuration..."
 cp "$SCRIPT_DIR/configs/tmux.conf" ~/.tmux.conf
 
-# Install iTerm2 profiles (macOS only)
+# Install iTerm2 Nord profile (macOS only)
 if [ -d ~/Library/Application\ Support/iTerm2 ]; then
-    echo "Installing iTerm2 Nord profiles..."
+    echo "Installing iTerm2 Nord profile..."
     mkdir -p ~/Library/Application\ Support/iTerm2/DynamicProfiles
     cp "$SCRIPT_DIR/configs/iterm2/Nord.json" ~/Library/Application\ Support/iTerm2/DynamicProfiles/
-    
-    # Set Nord Auto as default profile using AppleScript
-    echo "Setting Nord Auto as default iTerm2 profile..."
-    osascript <<'APPLESCRIPT'
-tell application "iTerm2"
-    -- Get the Nord Auto profile and set it as default
-    set defaultBookmark to "Nord Auto"
-    tell current window
-        -- This triggers iTerm2 to recognize the profile
-    end tell
-end tell
-APPLESCRIPT
-    
-    # Also set via defaults (more reliable)
-    # Get the GUID of the Nord Auto profile
-    defaults write com.googlecode.iterm2 "Default Bookmark Guid" -string "nord-auto-profile"
-    echo "Nord Auto profile set as default"
 fi
 
-# Install OpenCode themes
-echo "Installing OpenCode Nord themes..."
+# Install OpenCode Nord theme
+echo "Installing OpenCode Nord theme..."
 mkdir -p ~/.config/opencode/themes
-cp "$SCRIPT_DIR/configs/opencode/themes/"*.json ~/.config/opencode/themes/
-
-# Install launchd agent for auto theme switching (macOS only)
-if [ -d ~/Library/LaunchAgents ]; then
-    echo "Installing auto theme switching agent..."
-    mkdir -p ~/Library/LaunchAgents
-    cp "$SCRIPT_DIR/configs/launchd/com.clickterm.theme-watcher.plist" ~/Library/LaunchAgents/
-    
-    # Unload if already loaded, then load
-    launchctl unload ~/Library/LaunchAgents/com.clickterm.theme-watcher.plist 2>/dev/null || true
-    launchctl load ~/Library/LaunchAgents/com.clickterm.theme-watcher.plist
-    echo "Auto theme switching enabled (follows macOS dark/light mode)"
-fi
+cp "$SCRIPT_DIR/configs/opencode/themes/nord-dark.json" ~/.config/opencode/themes/
 
 echo ""
 echo "Installation complete!"
 echo ""
 echo "Next steps:"
 echo "  1. Reload tmux: tmux source-file ~/.tmux.conf"
-echo "  2. Select 'Nord Auto' profile in iTerm2 Preferences → Profiles"
-echo "  3. Theme will now auto-switch with macOS appearance!"
-echo ""
-echo "Manual theme commands:"
-echo "  ~/.config/clickterm/theme-switch.sh dark"
-echo "  ~/.config/clickterm/theme-switch.sh light"
-echo "  ~/.config/clickterm/theme-switch.sh auto"
+echo "  2. In iTerm2: Preferences → Profiles → Select 'Nord' → Set as Default"
+echo "  3. (Optional) Add '\"theme\": \"nord-dark\"' to ~/.config/opencode/opencode.json"
 echo ""
 echo "For help, click the [ ? ] button in the tmux status bar."

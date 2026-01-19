@@ -19,10 +19,9 @@ Then launch **clickterm** from your Applications folder or Dock.
 
 - **Native macOS app** - Proper Dock icon, click to launch
 - **Mouse-driven workflow** - Click status bar buttons for all actions
-- **Nord color theme** - Consistent colors across iTerm2, tmux, and AI tools
+- **Nord Dark theme** - Consistent colors across iTerm2, tmux, and AI tools
 - **Smart pane management** - Split limits, busy-pane detection, last-pane protection
 - **Tool launchers** - One-click OpenCode and Claude Code buttons
-- **Dark/Light themes** - Switch with a command or button
 
 ## How It Works
 
@@ -62,14 +61,6 @@ clickterm is a native Swift app that:
 | `[ opencode ]` | Launch OpenCode AI assistant |
 | `[ claude ]` | Launch Claude Code AI assistant |
 
-## Theme Switching
-
-```bash
-~/.config/clickterm/theme-switch.sh dark    # Dark mode
-~/.config/clickterm/theme-switch.sh light   # Light mode  
-~/.config/clickterm/theme-switch.sh toggle  # Toggle between modes
-```
-
 ## Alternative: Scripts Only
 
 If you prefer to use your own terminal setup:
@@ -104,8 +95,7 @@ tmux-clickterm/
 │   ├── ARCHITECTURE.md         # Technical deep-dive
 │   └── EXTENDING.md            # How to add features
 ├── *.sh                        # Handler scripts
-├── tmux-theme-dark.conf        # Dark theme + button definitions
-├── tmux-theme-light.conf       # Light theme + button definitions
+├── tmux-theme.conf             # Nord Dark theme + button definitions
 └── install.sh                  # Manual installation script
 ```
 
@@ -114,8 +104,6 @@ tmux-clickterm/
 ```bash
 make dev          # Install scripts + reload tmux
 make lint         # Run shellcheck on all scripts
-make theme-dark   # Switch to dark theme
-make theme-light  # Switch to light theme
 ```
 
 See `docs/EXTENDING.md` for how to add new buttons and features.
@@ -131,7 +119,7 @@ See `docs/EXTENDING.md` for how to add new buttons and features.
 - Native macOS app for Dock integration
 - Opens in new iTerm window (not tab)
 - Auto-installs scripts on first run
-- Nord theme support for dark/light modes
+- Nord Dark theme
 
 ## License
 
