@@ -81,8 +81,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - iTerm Integration
     
     private func launchiTermWithTmux() {
-        // Create a launcher script in a temp location and open it with iTerm
-        // This avoids AppleScript "write text" which can paste to wrong windows
+        // Create a launcher script
         let launcherScript = """
         #!/bin/bash
         cd ~/Developers/tmux-clickterm
@@ -100,10 +99,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         
-        // Open the script with iTerm
+        // Force a new window by using "open -n" which launches a new instance behavior
+        // Combined with AppleScript to ensure window creation
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-        process.arguments = ["-a", "iTerm", scriptPath.path]
+        process.arguments = ["-n", "-a", "iTerm", "--args", scriptPath.path]
         
         do {
             try process.run()
