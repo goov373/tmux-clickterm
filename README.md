@@ -78,6 +78,17 @@ This installs the scripts and tmux configuration without the macOS app wrapper.
 - tmux 3.0+
 - iTerm2
 
+## Performance Tips
+
+For the smoothest pane resize experience, ensure these iTerm2 settings:
+
+1. **Enable GPU Rendering**  
+   Settings → General → Magic → **GPU Rendering** ✓
+
+2. **Disable Throughput Mode**  
+   Settings → General → Magic → **Disable** "Maximize throughput..."  
+   (Allows higher frame rate during drag operations)
+
 ## Project Structure
 
 ```
