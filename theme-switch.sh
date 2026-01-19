@@ -24,13 +24,28 @@ get_current_mode() {
     fi
 }
 
+# Switch iTerm2 profile using escape sequence
+switch_iterm_profile() {
+    local profile="$1"
+    # iTerm2 proprietary escape sequence to change profile
+    # This works for all panes in the current tmux session
+    if [ -n "$TMUX" ]; then
+        # Send to all tmux panes
+        for pane in $(tmux list-panes -a -F '#{pane_id}'); do
+            tmux send-keys -t "$pane" -l $'\033]1337;SetProfile='"$profile"$'\007' 2>/dev/null
+        done
+    else
+        # Direct output if not in tmux
+        printf '\033]1337;SetProfile=%s\007' "$profile"
+    fi
+}
+
 # Switch to dark mode
 switch_dark() {
     local silent="${1:-false}"
     
     # Update tmux.conf to source dark theme
     if [ -f "$TMUX_CONF" ]; then
-        # Replace any theme source line with dark theme
         sed -i '' 's|^source-file ~/.config/clickterm/tmux-theme-light.conf|source-file ~/.config/clickterm/tmux-theme-dark.conf|' "$TMUX_CONF"
     fi
     
@@ -38,6 +53,9 @@ switch_dark() {
     if [ -f "$OPENCODE_CONF" ] && command -v jq &>/dev/null; then
         jq '.theme = "nord"' "$OPENCODE_CONF" > "$OPENCODE_CONF.tmp" && mv "$OPENCODE_CONF.tmp" "$OPENCODE_CONF"
     fi
+    
+    # Switch iTerm2 profile
+    switch_iterm_profile "Nord"
     
     [ "$silent" != "true" ] && echo "Switched to Nord Dark theme"
 }
@@ -48,7 +66,6 @@ switch_light() {
     
     # Update tmux.conf to source light theme
     if [ -f "$TMUX_CONF" ]; then
-        # Replace any theme source line with light theme
         sed -i '' 's|^source-file ~/.config/clickterm/tmux-theme-dark.conf|source-file ~/.config/clickterm/tmux-theme-light.conf|' "$TMUX_CONF"
     fi
     
@@ -57,6 +74,9 @@ switch_light() {
         jq '.theme = "nord-light"' "$OPENCODE_CONF" > "$OPENCODE_CONF.tmp" && mv "$OPENCODE_CONF.tmp" "$OPENCODE_CONF"
     fi
     
+    # Switch iTerm2 profile
+    switch_iterm_profile "Nord Light"
+    
     [ "$silent" != "true" ] && echo "Switched to Nord Light theme"
 }
 
@@ -64,6 +84,16 @@ switch_light() {
 reload_tmux() {
     if [ -n "$TMUX" ]; then
         tmux source-file ~/.tmux.conf 2>/dev/null
+    fi
+}
+
+# Show message in tmux
+show_message() {
+    local msg="$1"
+    if [ -n "$TMUX" ]; then
+        tmux display-message "$msg"
+    else
+        echo "$msg"
     fi
 }
 
@@ -119,19 +149,24 @@ case "${1:-toggle}" in
     dark)
         switch_dark
         reload_tmux
+        show_message "Switched to Dark mode (restart OpenCode to apply)"
         ;;
     light)
         switch_light
         reload_tmux
+        show_message "Switched to Light mode (restart OpenCode to apply)"
         ;;
     toggle)
         current=$(get_current_mode)
         if [ "$current" = "dark" ]; then
             switch_light
+            reload_tmux
+            show_message "Switched to Light mode (restart OpenCode to apply)"
         else
             switch_dark
+            reload_tmux
+            show_message "Switched to Dark mode (restart OpenCode to apply)"
         fi
-        reload_tmux
         ;;
     auto)
         sync_to_macos
