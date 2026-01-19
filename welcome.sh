@@ -5,6 +5,7 @@
 
 # Nord colors
 NORD3="\033[38;2;76;86;106m"
+NORD4="\033[38;2;216;222;233m"
 NORD8="\033[38;2;136;192;208m"
 RESET="\033[0m"
 BOLD="\033[1m"
@@ -55,17 +56,17 @@ done <<< "$LOGO"
 echo
 
 # Tagline (centered)
-center "${NORD3}${TAGLINE}${RESET}" ${#TAGLINE}
+center "${NORD4}${TAGLINE}${RESET}" ${#TAGLINE}
 
 # Blank lines before tips
 echo
 echo
 
 # Tip line (centered)
-center "${NORD3}${TIP}${RESET}" ${#TIP}
+center "${NORD4}${TIP}${RESET}" ${#TIP}
 
 # Button hints (centered)
-center "${NORD3}${HINTS}${RESET}" ${#HINTS}
+center "${NORD4}${HINTS}${RESET}" ${#HINTS}
 
 # Blank lines before shell prompt appears
 echo

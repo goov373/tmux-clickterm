@@ -2,6 +2,10 @@
 # clickterm shell-init.sh - Initialize clickterm shell environment
 # Sourced on tmux session start to set up aliases and show welcome banner
 
+# Source standard bash profile/rc for normal environment
+[[ -f ~/.bash_profile ]] && source ~/.bash_profile
+[[ -f ~/.bashrc ]] && source ~/.bashrc
+
 # Define clear alias to show welcome banner instead of just clearing
 alias clear='~/.config/clickterm/welcome.sh'
 
