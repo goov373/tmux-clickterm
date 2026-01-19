@@ -54,13 +54,33 @@ if [[ -f "$PROJECT_ROOT/configs/tmux.conf" ]]; then
     cp "$PROJECT_ROOT/configs/tmux.conf" "$APP_BUNDLE/Contents/Resources/"
 fi
 
-# Generate app icon if we have the iconset
+# Generate app icon
 if [[ -f "$PROJECT_ROOT/assets/clickterm.icns" ]]; then
     cp "$PROJECT_ROOT/assets/clickterm.icns" "$APP_BUNDLE/Contents/Resources/AppIcon.icns"
     echo -e "\033[0;32mIcon bundled.\033[0m"
 elif [[ -d "$PROJECT_ROOT/assets/clickterm.iconset" ]] && ls "$PROJECT_ROOT/assets/clickterm.iconset"/*.png &>/dev/null; then
     iconutil -c icns -o "$APP_BUNDLE/Contents/Resources/AppIcon.icns" "$PROJECT_ROOT/assets/clickterm.iconset"
     echo -e "\033[0;32mIcon generated from iconset.\033[0m"
+elif [[ -f "$PROJECT_ROOT/assets/logo.svg" ]] && command -v rsvg-convert &>/dev/null; then
+    # Generate icon from SVG using rsvg-convert
+    echo -e "\033[0;33mGenerating icon from SVG...\033[0m"
+    ICONSET_DIR="$BUILD_DIR/AppIcon.iconset"
+    mkdir -p "$ICONSET_DIR"
+    
+    rsvg-convert -w 16 -h 16 "$PROJECT_ROOT/assets/logo.svg" -o "$ICONSET_DIR/icon_16x16.png"
+    rsvg-convert -w 32 -h 32 "$PROJECT_ROOT/assets/logo.svg" -o "$ICONSET_DIR/icon_16x16@2x.png"
+    rsvg-convert -w 32 -h 32 "$PROJECT_ROOT/assets/logo.svg" -o "$ICONSET_DIR/icon_32x32.png"
+    rsvg-convert -w 64 -h 64 "$PROJECT_ROOT/assets/logo.svg" -o "$ICONSET_DIR/icon_32x32@2x.png"
+    rsvg-convert -w 128 -h 128 "$PROJECT_ROOT/assets/logo.svg" -o "$ICONSET_DIR/icon_128x128.png"
+    rsvg-convert -w 256 -h 256 "$PROJECT_ROOT/assets/logo.svg" -o "$ICONSET_DIR/icon_128x128@2x.png"
+    rsvg-convert -w 256 -h 256 "$PROJECT_ROOT/assets/logo.svg" -o "$ICONSET_DIR/icon_256x256.png"
+    rsvg-convert -w 512 -h 512 "$PROJECT_ROOT/assets/logo.svg" -o "$ICONSET_DIR/icon_256x256@2x.png"
+    rsvg-convert -w 512 -h 512 "$PROJECT_ROOT/assets/logo.svg" -o "$ICONSET_DIR/icon_512x512.png"
+    rsvg-convert -w 1024 -h 1024 "$PROJECT_ROOT/assets/logo.svg" -o "$ICONSET_DIR/icon_512x512@2x.png"
+    
+    iconutil -c icns "$ICONSET_DIR" -o "$APP_BUNDLE/Contents/Resources/AppIcon.icns"
+    rm -rf "$ICONSET_DIR"
+    echo -e "\033[0;32mIcon generated from SVG.\033[0m"
 else
     echo -e "\033[0;33mNo icon found, using system default.\033[0m"
 fi

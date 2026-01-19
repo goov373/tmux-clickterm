@@ -4,6 +4,10 @@
 <dict>
 	<key>files</key>
 	<dict>
+		<key>Resources/AppIcon.icns</key>
+		<data>
+		PKB6cZ+83av7Mn5td8aTfy3Jlh0=
+		</data>
 		<key>Resources/scripts/close.sh</key>
 		<data>
 		X9InYH/F+U4jSlt2IZg2jDjV14I=
@@ -51,6 +55,13 @@
 	</dict>
 	<key>files2</key>
 	<dict>
+		<key>Resources/AppIcon.icns</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			8AtZYbBhIRM070Uvd4APsZdpN8J/vSSDUAUiFwMI070=
+			</data>
+		</dict>
 		<key>Resources/scripts/close.sh</key>
 		<dict>
 			<key>hash2</key>

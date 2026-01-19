@@ -25,6 +25,6 @@
     <key>LSUIElement</key>
     <false/>
     <key>NSAppleEventsUsageDescription</key>
-    <string>clickterm needs to control iTerm2 to open terminal windows.</string>
+    <string>clickterm needs permission to run terminal commands.</string>
 </dict>
 </plist>

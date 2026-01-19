@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Square background - Nord dark -->
+  <rect x="32" y="32" width="448" height="448" fill="#2e3440"/>
+  
+  <!-- Inner subtle border -->
+  <rect x="32" y="32" width="448" height="448" fill="none" stroke="#3b4252" stroke-width="3"/>
+  
+  <!-- Corner brackets - simple circular arcs using arc command, Nord cyan -->
+  <!-- Top-left arc -->
+  <path d="M80 160 A80 80 0 0 1 160 80" fill="none" stroke="#88c0d0" stroke-width="32" stroke-linecap="round"/>
+  
+  <!-- Top-right arc -->
+  <path d="M352 80 A80 80 0 0 1 432 160" fill="none" stroke="#88c0d0" stroke-width="32" stroke-linecap="round"/>
+  
+  <!-- Bottom-left arc -->
+  <path d="M80 352 A80 80 0 0 0 160 432" fill="none" stroke="#88c0d0" stroke-width="32" stroke-linecap="round"/>
+  
+  <!-- Bottom-right arc -->
+  <path d="M352 432 A80 80 0 0 0 432 352" fill="none" stroke="#88c0d0" stroke-width="32" stroke-linecap="round"/>
+  
+  <!-- Chevron/arrow > symbol - Nord cyan, same width as corners -->
+  <path d="M196 172 L316 256 L196 340" fill="none" stroke="#88c0d0" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
