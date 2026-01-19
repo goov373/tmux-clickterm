@@ -85,7 +85,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let launcherScript = """
         #!/bin/bash
         cd ~/Developers/tmux-clickterm
-        exec tmux new-session -A -s clickterm
+        
+        # Check if session already exists
+        if tmux has-session -t clickterm 2>/dev/null; then
+            # Attach to existing session
+            exec tmux attach-session -t clickterm
+        else
+            # Create new session and show welcome screen
+            tmux new-session -d -s clickterm
+            tmux send-keys -t clickterm '~/.config/clickterm/welcome.sh && clear' Enter
+            exec tmux attach-session -t clickterm
+        fi
         """
         
         let tempDir = FileManager.default.temporaryDirectory
