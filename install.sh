@@ -43,13 +43,29 @@ echo "Installing OpenCode Nord themes..."
 mkdir -p ~/.config/opencode/themes
 cp "$SCRIPT_DIR/configs/opencode/themes/"*.json ~/.config/opencode/themes/
 
+# Install launchd agent for auto theme switching (macOS only)
+if [ -d ~/Library/LaunchAgents ]; then
+    echo "Installing auto theme switching agent..."
+    mkdir -p ~/Library/LaunchAgents
+    cp "$SCRIPT_DIR/configs/launchd/com.clickterm.theme-watcher.plist" ~/Library/LaunchAgents/
+    
+    # Unload if already loaded, then load
+    launchctl unload ~/Library/LaunchAgents/com.clickterm.theme-watcher.plist 2>/dev/null || true
+    launchctl load ~/Library/LaunchAgents/com.clickterm.theme-watcher.plist
+    echo "Auto theme switching enabled (follows macOS dark/light mode)"
+fi
+
 echo ""
 echo "Installation complete!"
 echo ""
 echo "Next steps:"
 echo "  1. Reload tmux: tmux source-file ~/.tmux.conf"
-echo "  2. Select 'Nord' profile in iTerm2 Preferences → Profiles"
-echo "  3. Add to ~/.config/opencode/opencode.json:"
-echo '     { "theme": "nord" }'
+echo "  2. Select 'Nord Auto' profile in iTerm2 Preferences → Profiles"
+echo "  3. Theme will now auto-switch with macOS appearance!"
+echo ""
+echo "Manual theme commands:"
+echo "  ~/.config/clickterm/theme-switch.sh dark"
+echo "  ~/.config/clickterm/theme-switch.sh light"
+echo "  ~/.config/clickterm/theme-switch.sh auto"
 echo ""
 echo "For help, click the [ ? ] button in the tmux status bar."
