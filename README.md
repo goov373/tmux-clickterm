@@ -1,12 +1,42 @@
-# clickterm
+<p align="center">
+  <img src="assets/ClickTerm.png" alt="clickterm logo" width="200">
+</p>
 
-A mouse-driven tmux development environment with a native macOS app.
+<h1 align="center">clickterm</h1>
 
-**Philosophy:** Click buttons instead of memorizing keyboard shortcuts.
+<p align="center">
+  <strong>A mouse-driven tmux development environment with a native macOS app.</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/goov373/tmux-clickterm/blob/main/LICENSE"><img src="https://img.shields.io/github/license/goov373/tmux-clickterm?style=flat-square" alt="License"></a>
+  <a href="https://github.com/goov373/tmux-clickterm/releases"><img src="https://img.shields.io/github/v/release/goov373/tmux-clickterm?style=flat-square" alt="Release"></a>
+  <img src="https://img.shields.io/badge/platform-macOS-blue?style=flat-square" alt="Platform">
+  <img src="https://img.shields.io/badge/theme-Nord-88c0d0?style=flat-square" alt="Nord Theme">
+</p>
+
+<p align="center">
+  <a href="#quick-start">Quick Start</a> &bull;
+  <a href="#features">Features</a> &bull;
+  <a href="#status-bar-buttons">Buttons</a> &bull;
+  <a href="docs/ARCHITECTURE.md">Architecture</a> &bull;
+  <a href="docs/EXTENDING.md">Extending</a>
+</p>
+
+---
+
+## Philosophy
+
+**Click buttons instead of memorizing keyboard shortcuts.**
+
+clickterm is for developers who prefer GUI-style interactions over memorizing complex key combinations. Every action is just one click away in the status bar.
+
+---
 
 ## Quick Start
 
 ```bash
+# Clone and build
 git clone https://github.com/goov373/tmux-clickterm.git
 cd tmux-clickterm
 ./app/build-app.sh
@@ -15,13 +45,20 @@ cp -r app/build/clickterm.app /Applications/
 
 Then launch **clickterm** from your Applications folder or Dock.
 
+---
+
 ## Features
 
-- **Native macOS app** - Proper Dock icon, click to launch
-- **Mouse-driven workflow** - Click status bar buttons for all actions
-- **Nord Dark theme** - Consistent colors across iTerm2, tmux, and AI tools
-- **Smart pane management** - Split limits, busy-pane detection, last-pane protection
-- **Tool launchers** - One-click OpenCode and Claude Code buttons
+| Feature | Description |
+|---------|-------------|
+| **Native macOS App** | Proper Dock icon, click to launch, no duplicate icons |
+| **Mouse-Driven Workflow** | Click status bar buttons for all common tmux actions |
+| **Nord Dark Theme** | Beautiful, consistent colors across iTerm2, tmux, and AI tools |
+| **Smart Pane Management** | Split limits, busy-pane detection, last-pane protection |
+| **AI Tool Launchers** | One-click OpenCode and Claude Code buttons |
+| **Safe Defaults** | Confirmations before destructive actions |
+
+---
 
 ## How It Works
 
@@ -49,6 +86,8 @@ clickterm is a native Swift app that:
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
+---
+
 ## Status Bar Buttons
 
 | Button | Action |
@@ -61,6 +100,8 @@ clickterm is a native Swift app that:
 | `[ opencode ]` | Launch OpenCode AI assistant |
 | `[ claude ]` | Launch Claude Code AI assistant |
 
+---
+
 ## Alternative: Scripts Only
 
 If you prefer to use your own terminal setup:
@@ -72,11 +113,17 @@ tmux new-session -A -s clickterm
 
 This installs the scripts and tmux configuration without the macOS app wrapper.
 
+---
+
 ## Requirements
 
-- macOS 12+
-- tmux 3.0+
-- iTerm2
+| Requirement | Version |
+|-------------|---------|
+| macOS | 12+ |
+| tmux | 3.0+ |
+| iTerm2 | Latest recommended |
+
+---
 
 ## Performance Tips
 
@@ -89,26 +136,29 @@ For the smoothest pane resize experience, ensure these iTerm2 settings:
    Settings → General → Magic → **Disable** "Maximize throughput..."  
    (Allows higher frame rate during drag operations)
 
+---
+
 ## Project Structure
 
 ```
 tmux-clickterm/
-├── app/
-│   ├── clickterm/
-│   │   └── main.swift          # Native macOS app source
-│   ├── build/
-│   │   └── clickterm.app       # Built application bundle
+├── app/                        # Native macOS app
+│   ├── clickterm/main.swift    # Swift source
+│   ├── build/clickterm.app     # Built app bundle
 │   └── build-app.sh            # Build script
-├── configs/
+├── configs/                    # Configuration files
 │   ├── tmux.conf               # Main tmux configuration
 │   └── iterm2/Nord.json        # iTerm2 color profile
-├── docs/
+├── docs/                       # Documentation
 │   ├── ARCHITECTURE.md         # Technical deep-dive
 │   └── EXTENDING.md            # How to add features
+├── assets/                     # Logos and icons
 ├── *.sh                        # Handler scripts
-├── tmux-theme.conf             # Nord Dark theme + button definitions
-└── install.sh                  # Manual installation script
+├── tmux-theme.conf             # Nord Dark theme + buttons
+└── install.sh                  # Manual installation
 ```
+
+---
 
 ## Development
 
@@ -117,7 +167,17 @@ make dev          # Install scripts + reload tmux
 make lint         # Run shellcheck on all scripts
 ```
 
-See `docs/EXTENDING.md` for how to add new buttons and features.
+See [EXTENDING.md](docs/EXTENDING.md) for how to add new buttons and features.
+
+---
+
+## Documentation
+
+- **[Architecture](docs/ARCHITECTURE.md)** - Technical deep-dive into how clickterm works
+- **[Extending](docs/EXTENDING.md)** - Step-by-step guides for adding features
+- **[AI Development Guide](AGENTS.md)** - Context for AI coding assistants
+
+---
 
 ## Changelog
 
@@ -132,6 +192,14 @@ See `docs/EXTENDING.md` for how to add new buttons and features.
 - Auto-installs scripts on first run
 - Nord Dark theme
 
+---
+
+## Contributing
+
+Contributions are welcome! Please read the [AGENTS.md](AGENTS.md) file for coding conventions and development workflow.
+
+---
+
 ## License
 
-MIT
+[MIT](LICENSE)
