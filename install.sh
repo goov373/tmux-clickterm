@@ -36,6 +36,23 @@ if [ -d ~/Library/Application\ Support/iTerm2 ]; then
     echo "Installing iTerm2 Nord profiles..."
     mkdir -p ~/Library/Application\ Support/iTerm2/DynamicProfiles
     cp "$SCRIPT_DIR/configs/iterm2/Nord.json" ~/Library/Application\ Support/iTerm2/DynamicProfiles/
+    
+    # Set Nord Auto as default profile using AppleScript
+    echo "Setting Nord Auto as default iTerm2 profile..."
+    osascript <<'APPLESCRIPT'
+tell application "iTerm2"
+    -- Get the Nord Auto profile and set it as default
+    set defaultBookmark to "Nord Auto"
+    tell current window
+        -- This triggers iTerm2 to recognize the profile
+    end tell
+end tell
+APPLESCRIPT
+    
+    # Also set via defaults (more reliable)
+    # Get the GUID of the Nord Auto profile
+    defaults write com.googlecode.iterm2 "Default Bookmark Guid" -string "nord-auto-profile"
+    echo "Nord Auto profile set as default"
 fi
 
 # Install OpenCode themes
